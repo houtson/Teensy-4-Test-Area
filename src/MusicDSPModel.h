@@ -33,7 +33,7 @@ public:
   
   virtual void Process(float * samples, uint32_t n) override
   {
-    for (int s = 0; s < n; ++s)
+    for (uint16_t s = 0; s < n; ++s)
     {
       float x = samples[s] - resonance * stage[3];
 

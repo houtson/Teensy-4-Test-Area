@@ -88,8 +88,7 @@ public:
   
   virtual void Process(float * samples, uint32_t n) override
   {
-    for (int s = 0; s < n; ++s)
-    {
+    for (uint32_t s = 0; s < n; ++s) {
       for (int j = 0; j < oversampleFactor; j++)
       {
         rungekutteSolver(samples[s], state);

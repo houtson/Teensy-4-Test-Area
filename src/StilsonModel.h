@@ -94,9 +94,8 @@ public:
   virtual void Process(float * samples, uint32_t n) override
   {
     float localState;
-    
-    for (int s = 0; s < n; ++s)
-    {
+
+    for (uint32_t s = 0; s < n; ++s) {
       // Scale by arbitrary value on account of our saturation function
       const float input = samples[s] * 0.65f;
       
