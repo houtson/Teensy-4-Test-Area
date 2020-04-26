@@ -183,18 +183,16 @@ void setup(void) {
   // Enable the audio shield. select input. and enable output
   sgtl5000.enable();
   sgtl5000.volume(0.3);
+
 #ifdef USE_NOISE
   waveform1.amplitude(WAVE_AMP / WAVE_MAX);
 #else
   //                amp   Frq  waveform
-  waveform1.begin(WAVE_AMP, 220, WAVEFORM_SINE);
-  waveform2.begin(WAVE_AMP, 138.5, WAVEFORM_SINE);
-  waveform3.begin(WAVE_AMP, 164.5, WAVEFORM_SINE);
-  // waveform4.begin(WAVE_AMP, 440, WAVEFORM_SINE);
-  /*waveform1.begin(WAVE_AMP, 440, WAVEFORM_SAWTOOTH);
-  waveform2.begin(WAVE_AMP, 528, WAVEFORM_SAWTOOTH);
-  waveform3.begin(WAVE_AMP, 880, WAVEFORM_SAWTOOTH);
-  waveform4.begin(WAVE_AMP, 1052, WAVEFORM_SAWTOOTH);*/
+  waveform1.begin(WAVE_AMP, 131, WAVEFORM_SINE);
+  waveform2.begin(WAVE_AMP, 196, WAVEFORM_SINE);
+  waveform3.begin(WAVE_AMP, 262, WAVEFORM_SINE);
+  waveform4.begin(WAVE_AMP, 330, WAVEFORM_SINE);
+
 #endif
 
   // Set resonance first to initialize the required
@@ -242,7 +240,7 @@ void update_pots() {
   // cutoff frequency
   freqPot.update();
   if (freqPot.hasChanged()) {
-    filterFreq = map(freqPot.getValue(), 0, 1023, 20, 6000);
+    filterFreq = ((maxFreq - minFreq) / 1023.0) * freqPot.getValue() + minFreq;
     mDSPm.SetCutoff(filterFreq);
     Serial.printf("Cutoff = %8.2f\n", filterFreq);
   }
@@ -250,7 +248,6 @@ void update_pots() {
   resPot.update();
   if (resPot.hasChanged()) {
     filterRes = ((maxRes - minRes) / 1023.0) * resPot.getValue() + minRes;
-    //    filterRes = float(map(resPot.getValue(), 0, 1023, 10, 100)) / 100.0;
     mDSPm.SetResonance(filterRes);
     Serial.printf("Resonance = %5.2f\n", filterRes);
   }
