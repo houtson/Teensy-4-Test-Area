@@ -5,6 +5,11 @@
  on Teensy 4.0 using the Play and Record
  queues
 
+- added Cut off Frequency and Reasonance Pot
+- added different ranges of res
+- added OberheimVariationModel
+
+
 200419
 _3
   Add fix for MusicDSP from
@@ -55,37 +60,53 @@ _1
 //#define RKSM    // RKSimulationModel
 //#define KRAJM   // KrajeskiModel
 //#define IMPRM  // ImprovedModel
-#define STSN  // StilsonModel
+//#define STSN  // StilsonModel
 //#define MOOG    // MoogModel
+#define OBER  // OberheimVariationModel
 
 #ifdef MDSPM
 #include "MusicDSPModel.h"
 MusicDSPMoog mDSPm(44100);
 const char *model_name = "MusicDSP";
+float filterRes = 0.1;
+float minRes = 0.1;
+float maxRes = 1.0;
 #endif
 
 #ifdef RKSM
 #include "RKSimulationModel.h"
 RKSimulationMoog mDSPm(44100);
 const char *model_name = "RKSimulation";
+float filterRes = 0.1;
+float minRes = 0.0;
+float maxRes = 5.0;
 #endif
 
 #ifdef KRAJM
 #include "KrajeskiModel.h"
 KrajeskiMoog mDSPm(44100);
 const char *model_name = "Krajeski";
+float filterRes = 0.1;
+float minRes = 0.0;
+float maxRes = 1.0;
 #endif
 
 #ifdef IMPRM
 #include "ImprovedModel.h"
 ImprovedMoog mDSPm(44100);
 const char *model_name = "Improved";
+float filterRes = 0.1;
+float minRes = 0.0;
+float maxRes = 4.0;
 #endif
 
 #ifdef STSN
 #include "StilsonModel.h"
 StilsonMoog mDSPm(44100);
 const char *model_name = "Stilson";
+float filterRes = 0.1;
+float minRes = 0.0;
+float maxRes = 1.0;
 #endif
 
 #ifdef MOOG
@@ -93,6 +114,18 @@ const char *model_name = "Stilson";
 // using DistoCore
 MoogFilter<float> mDSPm;
 const char *model_name = "Moog";
+float filterRes = 0.1;
+float minRes = 0.0;
+float maxRes = 1.0;
+#endif
+
+#ifdef OBER
+#include "OberheimVariationModel.h"
+OberheimVariationMoog mDSPm(44100);
+const char *model_name = "Oberheim";
+float filterRes = 1.0;
+float minRes = 1.0;
+float maxRes = 10.0;
 #endif
 //=====================================================
 
@@ -132,11 +165,6 @@ float filterFreq = 1500;
 float minFreq = 20.0;
 float maxFreq = 6000.0;
 
-// Res
-float filterRes = 0.1;
-float minRes = 0.1;
-float maxRes = 1.0;
-
 uint32_t now = 0;
 void setup(void) {
   Serial.begin(9600);
@@ -159,10 +187,14 @@ void setup(void) {
   waveform1.amplitude(WAVE_AMP / WAVE_MAX);
 #else
   //                amp   Frq  waveform
-  waveform1.begin(WAVE_AMP, 440, WAVEFORM_SAWTOOTH);
+  waveform1.begin(WAVE_AMP, 220, WAVEFORM_SINE);
+  waveform2.begin(WAVE_AMP, 138.5, WAVEFORM_SINE);
+  waveform3.begin(WAVE_AMP, 164.5, WAVEFORM_SINE);
+  //waveform4.begin(WAVE_AMP, 440, WAVEFORM_SINE);
+  /*waveform1.begin(WAVE_AMP, 440, WAVEFORM_SAWTOOTH);
   waveform2.begin(WAVE_AMP, 528, WAVEFORM_SAWTOOTH);
   waveform3.begin(WAVE_AMP, 880, WAVEFORM_SAWTOOTH);
-  waveform4.begin(WAVE_AMP, 1052, WAVEFORM_SAWTOOTH);
+  waveform4.begin(WAVE_AMP, 1052, WAVEFORM_SAWTOOTH);*/
 #endif
 
   // Set resonance first to initialize the required
@@ -217,15 +249,16 @@ void update_pots() {
   // reasonance
   resPot.update();
   if (resPot.hasChanged()) {
-    filterRes = float(map(resPot.getValue(), 0, 1023, 10, 100)) / 100.0;
+    filterRes = ((maxRes - minRes) / 1023.0)*resPot.getValue()+minRes;
+//    filterRes = float(map(resPot.getValue(), 0, 1023, 10, 100)) / 100.0;
     mDSPm.SetResonance(filterRes);
     Serial.printf("Resonance = %5.2f\n", filterRes);
   }
   // volume
-  volPot.update();
-  if (volPot.hasChanged()) {
-    static int volume = resPot.getValue();
-    sgtl5000.volume(volume / 1023.);
-    Serial.printf("Volume = %5.2f\n", volume / 1023.);
-  }
+  //volPot.update();
+  //if (volPot.hasChanged()) {
+  // static int volume = resPot.getValue();
+  //  sgtl5000.volume(volume / 1023.);
+  //  Serial.printf("Volume = %5.2f\n", volume / 1023.);
+  //}
 }
