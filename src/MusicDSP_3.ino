@@ -190,7 +190,7 @@ void setup(void) {
   waveform1.begin(WAVE_AMP, 220, WAVEFORM_SINE);
   waveform2.begin(WAVE_AMP, 138.5, WAVEFORM_SINE);
   waveform3.begin(WAVE_AMP, 164.5, WAVEFORM_SINE);
-  //waveform4.begin(WAVE_AMP, 440, WAVEFORM_SINE);
+  // waveform4.begin(WAVE_AMP, 440, WAVEFORM_SINE);
   /*waveform1.begin(WAVE_AMP, 440, WAVEFORM_SAWTOOTH);
   waveform2.begin(WAVE_AMP, 528, WAVEFORM_SAWTOOTH);
   waveform3.begin(WAVE_AMP, 880, WAVEFORM_SAWTOOTH);
@@ -249,14 +249,14 @@ void update_pots() {
   // reasonance
   resPot.update();
   if (resPot.hasChanged()) {
-    filterRes = ((maxRes - minRes) / 1023.0)*resPot.getValue()+minRes;
-//    filterRes = float(map(resPot.getValue(), 0, 1023, 10, 100)) / 100.0;
+    filterRes = ((maxRes - minRes) / 1023.0) * resPot.getValue() + minRes;
+    //    filterRes = float(map(resPot.getValue(), 0, 1023, 10, 100)) / 100.0;
     mDSPm.SetResonance(filterRes);
     Serial.printf("Resonance = %5.2f\n", filterRes);
   }
   // volume
-  //volPot.update();
-  //if (volPot.hasChanged()) {
+  // volPot.update();
+  // if (volPot.hasChanged()) {
   // static int volume = resPot.getValue();
   //  sgtl5000.volume(volume / 1023.);
   //  Serial.printf("Volume = %5.2f\n", volume / 1023.);

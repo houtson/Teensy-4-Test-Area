@@ -87,37 +87,31 @@ public:
 	
 	virtual void Process(float * samples, uint32_t n) noexcept override
 	{
-		for (int s = 0; s < n; ++s)
-		{
-			float input = samples[s];
-			
-			double sigma =
-				LPF1->GetFeedbackOutput() +
-				LPF2->GetFeedbackOutput() +
-				LPF3->GetFeedbackOutput() +
-				LPF4->GetFeedbackOutput();
-			
-			input *= 1.0 + K;
-			
-			// calculate input to first filter
-			double u = (input - K * sigma) * alpha0;
-			
-			u = tanh(saturation * u);
-			
-			double stage1 = LPF1->Tick(u);
-			double stage2 = LPF2->Tick(stage1);
-			double stage3 = LPF3->Tick(stage2);
-			double stage4 = LPF4->Tick(stage3);
-			
-			// Oberheim variations
-			samples[s] =
-				oberheimCoefs[0] * u +
-				oberheimCoefs[1] * stage1 +
-				oberheimCoefs[2] * stage2 +
-				oberheimCoefs[3] * stage3 +
-				oberheimCoefs[4] * stage4;
-		}
-	}
+          for (uint32_t s = 0; s < n; ++s) {
+            float input = samples[s];
+
+            double sigma =
+                LPF1->GetFeedbackOutput() + LPF2->GetFeedbackOutput() +
+                LPF3->GetFeedbackOutput() + LPF4->GetFeedbackOutput();
+
+            input *= 1.0 + K;
+
+            // calculate input to first filter
+            double u = (input - K * sigma) * alpha0;
+
+            u = tanh(saturation * u);
+
+            double stage1 = LPF1->Tick(u);
+            double stage2 = LPF2->Tick(stage1);
+            double stage3 = LPF3->Tick(stage2);
+            double stage4 = LPF4->Tick(stage3);
+
+            // Oberheim variations
+            samples[s] = oberheimCoefs[0] * u + oberheimCoefs[1] * stage1 +
+                         oberheimCoefs[2] * stage2 + oberheimCoefs[3] * stage3 +
+                         oberheimCoefs[4] * stage4;
+          }
+        }
 	
 	virtual void SetResonance(float r) override
         {
