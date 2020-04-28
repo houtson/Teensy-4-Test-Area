@@ -62,11 +62,12 @@ _1
 //#define IMPRM  // ImprovedModel
 //#define STSN  // StilsonModel
 //#define MOOG    // MoogModel
-#define OBER  // OberheimVariationModel
+//#define OBER  // OberheimVariationModel
+#define ANTTI  // AnttiHuovilainen
 
 #ifdef MDSPM
 #include "MusicDSPModel.h"
-MusicDSPMoog mDSPm(44100);
+        MusicDSPMoog mDSPm(44100);
 const char *model_name = "MusicDSP";
 float filterRes = 0.1;
 float minRes = 0.1;
@@ -109,6 +110,15 @@ float minRes = 0.0;
 float maxRes = 1.0;
 #endif
 
+#ifdef ANTTI
+#include "AnttiHuovilainen.h"
+AnttiMoog mDSPm(44100);
+const char *model_name = "AnttiMoog";
+float filterRes = 0.1;
+float minRes = 0.0;
+float maxRes = 1.0;
+#endif
+
 #ifdef MOOG
 #include "Moog.h"
 // using DistoCore
@@ -133,7 +143,7 @@ float maxRes = 10.0;
 #ifdef USE_NOISE
 AudioSynthNoiseWhite waveform1;
 #else
-AudioSynthWaveform waveform1;  // xy=154,58
+        AudioSynthWaveform waveform1;  // xy=154,58
 #endif
 AudioSynthWaveform waveform3;  // xy=154,250
 AudioSynthWaveform waveform2;  // xy=158,154
