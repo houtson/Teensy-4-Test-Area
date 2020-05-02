@@ -198,10 +198,10 @@ void setup(void) {
   waveform1.amplitude(WAVE_AMP / WAVE_MAX);
 #else
   //                amp   Frq  waveform
-  waveform1.begin(WAVE_AMP, 131, WAVEFORM_SINE);
-  waveform2.begin(WAVE_AMP, 196, WAVEFORM_SINE);
-  waveform3.begin(WAVE_AMP, 262, WAVEFORM_SINE);
-  waveform4.begin(WAVE_AMP, 330, WAVEFORM_SINE);
+  waveform1.begin(WAVE_AMP, 131, WAVEFORM_SAWTOOTH);
+  waveform2.begin(WAVE_AMP, 196, WAVEFORM_SAWTOOTH);
+  waveform3.begin(WAVE_AMP, 262, WAVEFORM_SAWTOOTH);
+  waveform4.begin(WAVE_AMP, 330, WAVEFORM_SAWTOOTH);
 
 #endif
 
