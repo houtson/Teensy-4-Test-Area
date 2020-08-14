@@ -57,13 +57,13 @@ _1
 //                vvv
 // Select exactly ONE of these filter options
 //#define MDSPM   // MusicDSPModel
-//#define RKSM    // RKSimulationModel
+#define RKSM    // RKSimulationModel
 //#define KRAJM   // KrajeskiModel
 //#define IMPRM  // ImprovedModel
 //#define STSN  // StilsonModel
 //#define MOOG    // MoogModel
 //#define OBER  // OberheimVariationModel
-#define ANTTI  // AnttiHuovilainen
+//#define ANTTI  // AnttiHuovilainen
 
 #ifdef MDSPM
 #include "MusicDSPModel.h"
