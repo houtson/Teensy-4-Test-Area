@@ -40,7 +40,7 @@ uint32_t AudioEffectDelay10tap::delayfade(uint8_t channel, float milliseconds, f
       tap[channel].fade_to_delay_samples = tap[channel].desired_delay = delay_length_samples;                 // where in the delay are we fading to
       tap[channel].fade_transition_time = transition_time;                                                    // fade over xx milis
       tap[channel].fade_samples_to_complete_transition = millisToSamples(tap[channel].fade_transition_time);  // counter to fade over xx samples
-      double tau = -1.0 * transition_time / log(1.0 - 1.0 / 1.01);  // calculate a multiplier for a exponential fade (with 1.01 overshoot)
+      double tau = -1.0 * transition_time / log(1.0 - 1.0 / 1.01);                                            // calculate a multiplier for a exponential fade (with 1.01 overshoot)
       tap[channel].fade_expo_multiplier = pow(exp(-1.0 / tau), 1.0 / (AUDIO_SAMPLE_RATE_EXACT / 1000.0));
       tap[channel].fade_multiplier_out = 1.0;  // initialise the multiplier to be applied as gain on outgoing tap
       tap[channel].fade_multiplier_in = 0.01;  // initialise the multiplier to be applied as gain on incoming tap
@@ -83,9 +83,12 @@ uint32_t AudioEffectDelay10tap::delaysmooth(uint8_t channel, float milliseconds)
       if (tap[channel].current_delay < tap[channel].desired_delay) tap[channel].inc_direction = 1;
       tap[channel].inc = 0.0;
       tap[channel].last_sample = 0;
-      temp = map(abs(tap[channel].current_delay - tap[channel].desired_delay), 0, 4000, 1, 12);
+      // set the speed of increment based on how much delaytime has change - this is completely arbitary/tune to your needs
+      // the delay_inc_per_semitone[] is an array of calculated increments to semitone pitch changes when incrementing
+      temp = map(abs(tap[channel].current_delay - tap[channel].desired_delay), 0, (static_cast<float>(max_delay_length_samples) * .8), 1, 12);
       tap[channel].inc_per_sample = delay_inc_per_semitone[constrain(temp, 0, 12)];
       tap[channel].delay_mode = DELAY_MODE_SMOOTH;
+      // Serial.printf("delaySmooth time:%d increment:%d (semitones)\n", tap[channel].desired_delay, temp);
     } else {
       // desired and current are equal so normal delay and no change
       tap[channel].delay_mode = DELAY_MODE_NORMAL;
@@ -162,8 +165,7 @@ void AudioEffectDelay10tap::update(void) {
         tap[channel].fade_multiplier_out *= tap[channel].fade_expo_multiplier;
         tap[channel].fade_multiplier_in /= tap[channel].fade_expo_multiplier;
         // read the two points from the delay line, crossfade and send to the output block
-        *output_data_pointer++ =
-            (int16_t)(delay_line[read_index] * tap[channel].fade_multiplier_out) + (int16_t)(delay_line[fade_to_read_index] * tap[channel].fade_multiplier_in);
+        *output_data_pointer++ = (int16_t)(delay_line[read_index] * tap[channel].fade_multiplier_out) + (int16_t)(delay_line[fade_to_read_index] * tap[channel].fade_multiplier_in);
         tap[channel].fade_samples_to_complete_transition--;
         if (tap[channel].fade_samples_to_complete_transition == 0) {  // got to end of fade
           // make the current_delay the fade_to_
@@ -205,7 +207,7 @@ void AudioEffectDelay10tap::update(void) {
           // not reached desired yet so get next sample and interpolate
           sample = delay_line[(read_index - inc_samples + max_delay_length_samples) % max_delay_length_samples];
           next_sample = delay_line[(read_index - inc_samples - tap[channel].inc_direction + max_delay_length_samples) % max_delay_length_samples];
-          if (tap[channel].last_sample == 0) tap[channel].last_sample = sample; // if just starting help the allpass tune in quickly
+          if (tap[channel].last_sample == 0) tap[channel].last_sample = sample;  // if just starting help the allpass tune in quickly
           *output_data_pointer++ = tap[channel].last_sample = allPassInterpolSamples(sample, next_sample, tap[channel].last_sample, inc_frac);
         }
       }

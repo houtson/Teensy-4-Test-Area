@@ -1,8 +1,8 @@
-/* Audio Library for Teensy 3.X
- *
+/* Audio Library for Teensy 4.x
  * Modified to extend to 10 taps PMF 16-03-2020
  * Modified for single samples delay line (rather than blocks) and tape delay like behaviour PMF 02-09-2020
- * added delayfade to fade between old and new delay time PMF 04-09-2020
+ * added delayfade to fade between old and new delay time with expo cross fade PMF 04-09-2020
+ * added delaysmooth to smoothly delay from old to new time PMF 14-10-2020
  */
 
 #ifndef effect_delay10tap_h_
