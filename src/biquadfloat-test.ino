@@ -44,7 +44,7 @@ void loop() {
   biquad1.setCoeff(0, Coeff[0]);
   biquad1.setCoeff(1, Coeff[1]);
   biquad1.initCoeff();
-  Serial.println("High Pass plus Low Pass ");
+  Serial.println("High Pass plus Low Pass >>");
   delay(5000);
   biquad1.setCoeff(0, Coeff[2]);
   biquad1.setCoeff(1, Coeff[2]);

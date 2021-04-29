@@ -4,12 +4,12 @@
 //
 //
 #include "filter_biquadfloat.h"
+
 #include <Arduino.h>
+
 #include "arm_math.h"
 
-void AudioFilterBiquadFloat::initCoeff() {
-  arm_biquad_cascade_df1_init_f32(&S1, NUMSTAGES, S1_coeffs, S1_pState);
-}
+void AudioFilterBiquadFloat::initCoeff() { arm_biquad_cascade_df1_init_f32(&S1, NUMSTAGES, S1_coeffs, S1_pState); }
 
 void AudioFilterBiquadFloat::update(void) {
   audio_block_t *blocka;
@@ -20,16 +20,12 @@ void AudioFilterBiquadFloat::update(void) {
     return;
   }
   // convert block of samples to floats
-  for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
-    blockFloat[i] = blocka->data[i] / 32768.0f;
-  }
+  arm_q15_to_float(blocka->data, blockFloat, AUDIO_BLOCK_SAMPLES);
   // process a block of samples
   arm_biquad_cascade_df1_f32(&S1, blockFloat, blockFloat, AUDIO_BLOCK_SAMPLES);
-
   // convert block back to ints
-  for (int i = 0; i < AUDIO_BLOCK_SAMPLES; i++) {
-    blocka->data[i] = (float)(blockFloat[i]) * 32768.0f;
-  }
+  arm_float_to_q15(blockFloat, blocka->data, AUDIO_BLOCK_SAMPLES);
+  
   transmit(blocka);
   release(blocka);
 }
