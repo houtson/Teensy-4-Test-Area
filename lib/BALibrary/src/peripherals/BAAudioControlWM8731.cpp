@@ -25,7 +25,9 @@
 namespace BALibrary {
 
 // use const instead of define for proper scoping
-constexpr int WM8731_I2C_ADDR = 0x1A;
+constexpr int WM8731_I2C_ADDR_LOW = 0x1A;   // CSB pin low (normal address)
+constexpr int WM8731_I2C_ADDR_HIGH = 0x1B;  // CSB pin high (alternative address)
+
 
 // The WM8731 register map
 constexpr int WM8731_REG_LLINEIN   = 0;
@@ -104,6 +106,13 @@ constexpr int WM8731_LRSWAPE_SHIFT = 5;
 constexpr int WM8731_ACTIVATE_ADDR = 9;
 constexpr int WM8731_ACTIVATE_MASK = 0x1;
 
+void BAAudioControlWM8731::setAddress(uint8_t level) {
+  if (level == LOW) {
+    i2c_addr = WM8731_I2C_ADDR_LOW;
+  } else {
+    i2c_addr = WM8731_I2C_ADDR_HIGH;
+  }
+}
 
 // Reset the internal shadow register array to match
 // the reset state of the codec.
@@ -124,6 +133,8 @@ void BAAudioControlWM8731::resetInternalReg(void) {
 BAAudioControlWM8731::BAAudioControlWM8731()
 {
 	resetInternalReg();
+	// set to default address
+	setAddress(0);
 }
 
 BAAudioControlWM8731::~BAAudioControlWM8731()
@@ -370,12 +381,12 @@ bool BAAudioControlWM8731::write(unsigned int reg, unsigned int val)
 	bool done = false;
 
 	while (!done) {
-		Wire.beginTransmission(WM8731_I2C_ADDR);
-		Wire.write((reg << 1) | ((val >> 8) & 1));
-		Wire.write(val & 0xFF);
-		byte error = Wire.endTransmission();
-		if (error) {
-			Serial.println(String("Wire::Error: ") + error + String(" retrying..."));
+          Wire.beginTransmission(i2c_addr);
+          Wire.write((reg << 1) | ((val >> 8) & 1));
+          Wire.write(val & 0xFF);
+          byte error = Wire.endTransmission();
+          if (error) {
+            Serial.println(String("Wire::Error: ") + error + String(" retrying..."));
 		} else {
 			done = true;
 			//Serial.println("Wire::SUCCESS!");

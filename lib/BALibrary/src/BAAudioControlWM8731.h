@@ -41,7 +41,10 @@ public:
 	BAAudioControlWM8731();
 	virtual ~BAAudioControlWM8731();
 
-	/// Mute and power down the codec.
+    // Set the i2c address, address selected on harware with CSB pin 0 = 0x1A 1= 0x1B
+    void setAddress(uint8_t level);
+
+        /// Mute and power down the codec.
 	void disable(void);
 
 	/// First disable, then cleanly power up and unmute the codec.
@@ -130,6 +133,8 @@ protected:
 	// Sets pullups, slew rate and drive strength
 	void setOutputStrength(void);
 
+    // i2c address
+	uint8_t i2c_addr;
 };
 
 /**************************************************************************//**
