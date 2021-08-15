@@ -54,10 +54,10 @@ void setup() {
 
   // start the oscilators
   //                amp   Frq  waveform
-  waveform1.begin(WAVE_AMP, 131, WAVEFORM_SAWTOOTH);
-  waveform2.begin(WAVE_AMP, 196, WAVEFORM_SAWTOOTH);
-  waveform3.begin(WAVE_AMP, 262, WAVEFORM_SAWTOOTH);
-  waveform4.begin(WAVE_AMP, 330, WAVEFORM_SAWTOOTH);
+  waveform1.begin(0.7, 131, WAVEFORM_SAWTOOTH);
+  waveform2.begin(0.7, 196, WAVEFORM_SAWTOOTH);
+  waveform3.begin(0.7, 262, WAVEFORM_SAWTOOTH);
+  waveform4.begin(0.7, 330, WAVEFORM_SAWTOOTH);
 }
 
 void loop() {}
