@@ -1,0 +1,25 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "PlatformIO",
+			"task": "Build (teensy40)",
+			"problemMatcher": [
+				"$platformio"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"label": "PlatformIO: Build (teensy40)"
+		},
+		{
+			"type": "PlatformIO",
+			"task": "Verbose Build (teensy40)",
+			"problemMatcher": [
+				"$platformio"
+			],
+			"label": "PlatformIO: Verbose Build (teensy40)"
+		}
+	]
+}
